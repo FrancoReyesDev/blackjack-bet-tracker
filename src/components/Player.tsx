@@ -35,7 +35,6 @@ export const Player: React.FC = () => {
     bet: number,
     status: "win" | "lose" | "tie"
   ) => {
-    alert(status)
     if (status === "win") setMoney(money + bet * 2);
     if (status === "tie") setMoney(money + bet);
 
