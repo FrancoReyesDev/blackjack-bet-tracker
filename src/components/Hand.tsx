@@ -2,17 +2,20 @@ import { HandAction } from "@/types";
 import { useReducer, useState } from "react";
 
 type HandStatus = "normal" | "blackjack" | "folded";
+
 type HandState = {
   state: HandStatus;
   bet: number;
+  secure: 0;
 };
+
 type HandMachine = {
   [key in HandStatus]: {
     [key in HandAction]?: () => HandState | void;
   };
 };
 
-export const Hand: React.FC<{
+type HandProps = {
   id: Symbol;
   initialBet: number;
   openHand: (betAmmount: number) => void;
@@ -23,9 +26,12 @@ export const Hand: React.FC<{
     status: "win" | "lose" | "tie"
   ) => void;
   endSecure: (secure: number, status: "win" | "lose") => void;
-}> = ({ id, initialBet, endHand, bet, endSecure, openHand }) => {
+}
+
+export const Hand: React.FC<HandProps> = ({ id, initialBet, endHand, bet, endSecure, openHand }) => {
   const [state, dispatch] = useReducer(
     (state: HandState, action: HandAction) => {
+
       const endActions = {
         lose: () => endHand(id, state.bet, "lose"),
         win: () => endHand(id, state.bet, "win"),
@@ -44,12 +50,14 @@ export const Hand: React.FC<{
             bet(initialBet) ? ({
               bet: state.bet * 2,
               state: "folded",
-            }) : state
+              secure: state.secure
+            }) : state satisfies HandState
 
           ,
           blackjack: () => ({
             state: "blackjack",
             bet: initialBet
+            , secure: state.secure
           })
           , ...endActions,
         },
@@ -66,6 +74,7 @@ export const Hand: React.FC<{
     {
       state: "normal",
       bet: initialBet,
+      secure: 0
     } satisfies HandState
   );
 

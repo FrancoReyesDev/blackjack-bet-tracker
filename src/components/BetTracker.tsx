@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Hand } from "./Hand";
 
-export const Player: React.FC = () => {
+export const BetTracker: React.FC = () => {
   const [money, setMoney] = useState(0);
   const [hands, setHands] = useState<
     Map<Symbol, { id: Symbol; initialBet: number }>
@@ -26,7 +26,6 @@ export const Player: React.FC = () => {
 
   const endSecure = (secure: number, status: "win" | "lose") => {
     if (status === "win") setMoney(money + secure);
-    if (status === "lose") setMoney(money - secure);
   };
 
 
@@ -91,22 +90,15 @@ export const Player: React.FC = () => {
   };
 
   useEffect(() => {
-    init();
   }, [money, hands]);
 
   return (
-    <div className="flex flex-col gap-3 p-4 ">
-      <div className="flex flex-row gap-10">
-        Money:{" "}
-        <input
-          type="number"
-          value={money}
-          min={0}
-          onChange={(e) => setMoney(Number(e.target.value))}
-        />
+    <div id="BetTracker" className="flex flex-col h-full ">
+      <div id="Money" className="flex flex-row py-3 bg-gradient-to-r justify-center from-transparent via-black to-transparent">
+        <div className="cursor-pointer text-5xl text-yellow-600 font-bold hover:before:content-['+']" onClick={setInitialMoney}>${money}</div>
       </div>
-      <div className="flex flex-row gap-10">
-        {hands.size === 0 ? <button onClick={startHandHandler}>apostar</button> : <></>}
+      <div className="flex flex-row justify-center align-center flex-grow  gap-10">
+        {hands.size === 0 ? <button onClick={startHandHandler}>nueva mano</button> : <></>}
         {Array.from(hands.values()).map(({ initialBet, id }, key) => (
           <Hand
             key={key}
